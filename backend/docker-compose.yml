@@ -1,0 +1,39 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: retail-erp-db
+    environment:
+      POSTGRES_DB: retail_erp
+      POSTGRES_USER: erp_user
+      POSTGRES_PASSWORD: erp_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U erp_user -d retail_erp"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: retail-erp-api
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: retail_erp
+      DB_USER: erp_user
+      DB_PASS: erp_password
+      JWT_SECRET: dev-only-jwt-secret-key-must-be-at-least-32-characters-long
+      SPRING_PROFILES_ACTIVE: dev
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
