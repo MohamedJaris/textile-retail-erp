@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Readymade Retail ERP — Complete Project Plan & Architecture</title>
+<style>
+:root{
+  --bg:#f5f7fb;--card:#fff;--text:#172033;--muted:#5d687c;--line:#dfe4ec;
+  --accent:#315efb;--accent2:#6d45e8;--soft:#eef2ff;--success:#0f8a5f;
+  --warn:#a56a00;--danger:#c0392b;--code:#111827;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;line-height:1.65}
+.container{max-width:1200px;margin:auto;padding:32px 22px 70px}
+.hero{background:linear-gradient(135deg,#18233d,#304f9e);color:white;border-radius:22px;padding:48px 42px;margin-bottom:28px;box-shadow:0 16px 40px #18233d22}
+.hero h1{font-size:38px;line-height:1.15;margin:0 0 14px}
+.hero p{font-size:17px;max-width:900px;color:#e7ecff;margin:8px 0}
+.badges{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px}
+.badge{padding:7px 12px;border:1px solid #ffffff35;border-radius:999px;background:#ffffff12;font-size:13px}
+nav{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:26px}
+nav strong{display:block;margin-bottom:10px}
+nav a{color:var(--accent);text-decoration:none;margin-right:18px;line-height:2}
+section{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:30px;margin:22px 0}
+h2{font-size:27px;margin:0 0 15px;border-bottom:1px solid var(--line);padding-bottom:10px}
+h3{font-size:20px;margin-top:26px}
+h4{margin-bottom:7px}
+p{margin:9px 0}
+ul,ol{padding-left:25px}
+li{margin:5px 0}
+.callout{padding:17px 19px;border-radius:12px;background:var(--soft);border-left:4px solid var(--accent);margin:18px 0}
+.success{background:#edf9f4;border-left-color:var(--success)}
+.warning{background:#fff7e8;border-left-color:var(--warn)}
+.danger{background:#fff0ee;border-left-color:var(--danger)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:15px}
+.card{border:1px solid var(--line);border-radius:14px;padding:18px;background:#fff}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:15px 0;font-size:14px}
+th,td{border:1px solid var(--line);padding:11px 12px;text-align:left;vertical-align:top}
+th{background:#f0f3f8}
+code{background:#eef1f5;padding:2px 5px;border-radius:5px}
+pre{background:var(--code);color:#e7edf7;padding:18px;border-radius:12px;overflow:auto;font-size:13px;line-height:1.55}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:18px 0}
+.flow span{background:#f0f3f8;border:1px solid var(--line);padding:9px 12px;border-radius:9px;font-weight:600}
+.arrow{color:var(--accent);font-weight:bold}
+.small{color:var(--muted);font-size:13px}
+.kpi{font-size:25px;font-weight:800;color:var(--accent)}
+footer{text-align:center;color:var(--muted);padding:25px}
+@media(max-width:650px){.hero{padding:32px 24px}.hero h1{font-size:30px}section{padding:22px}table{display:block;overflow:auto}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header class="hero">
+<h1>Readymade Retail ERP</h1>
+<p><strong>Complete Project Plan, Functional Specification & Architecture Decision</strong></p>
+<p>A practical ERP for a readymade retail store covering billing, barcode-based product identification, inventory, purchases, suppliers, dealers, customers, staff, accounting, returns, exchanges, reporting and secure role-based access.</p>
+<div class="badges">
+<span class="badge">React.js</span><span class="badge">Java + Spring Boot</span><span class="badge">PostgreSQL</span>
+<span class="badge">AWS Cloud</span><span class="badge">Modular Monolith</span><span class="badge">Dynamic POS</span>
+</div>
+</header>
+
+<nav>
+<strong>Contents</strong>
+<a href="#purpose">1. Purpose</a><a href="#decisions">2. Architecture Decisions</a><a href="#modules">3. Modules</a>
+<a href="#products">4. Products</a><a href="#barcode">5. Barcode</a><a href="#pos">6. POS</a>
+<a href="#purchases">7. Purchases</a><a href="#customers">8. Customers</a><a href="#staff">9. Staff</a>
+<a href="#accounts">10. Accounting</a><a href="#returns">11. Returns</a><a href="#reports">12. Reports</a>
+<a href="#security">13. Security</a><a href="#architecture">14. Technical Architecture</a>
+<a href="#database">15. Database</a><a href="#api">16. APIs</a><a href="#workflows">17. Workflows</a>
+<a href="#phases">18. Development Phases</a><a href="#future">19. Future Evolution</a><a href="#definition">20. Final Definition</a>
+</nav>
+
+<section id="purpose">
+<h2>1. Project Purpose</h2>
+<p>This system is designed for a <strong>readymade retail store</strong>, not a textile manufacturing business. The ERP should replace disconnected registers, spreadsheets and manual stock/accounting processes with one centralized system.</p>
+<div class="grid">
+<div class="card"><h3>Billing</h3><p>Fast POS billing with barcode scanning, search, manual selection, discounts, taxes, multiple payment methods and invoice generation.</p></div>
+<div class="card"><h3>Inventory</h3><p>Track stock at product/variant level, purchases, sales, returns, adjustments, low-stock thresholds and complete stock movement history.</p></div>
+<div class="card"><h3>Business Management</h3><p>Manage suppliers, dealers, customers and staff from structured master records.</p></div>
+<div class="card"><h3>Finance</h3><p>Track income, expenses, supplier payables, customer receivables, payments and transaction-linked accounting information.</p></div>
+</div>
+<div class="callout success"><strong>Core objective:</strong> every important business event should create traceable records. A sale should affect the sale record, stock, payment and relevant ledger information rather than simply changing a few numbers.</div>
+</section>
+
+<section id="decisions">
+<h2>2. Major Architecture Decisions</h2>
+
+<h3>2.1 Monolith vs Microservices</h3>
+<div class="callout success"><strong>Recommended: Modular Monolith.</strong> Build one Spring Boot application, but organize it into strongly separated business modules. Do not start with microservices.</div>
+<table>
+<tr><th>Option</th><th>Advantages</th><th>Disadvantages</th><th>Decision</th></tr>
+<tr><td><strong>Modular Monolith</strong></td><td>Simple deployment; simple transactions; one database; faster development; easier debugging; lower infrastructure cost; ideal for current store scale.</td><td>Less independent scaling; application is one deployable unit.</td><td><strong>Recommended</strong></td></tr>
+<tr><td>Microservices</td><td>Independent scaling/deployment; team autonomy; service isolation; useful for very large SaaS systems.</td><td>Network failures, distributed transactions, service discovery, queues, observability, deployment complexity and higher maintenance.</td><td>Do later if required</td></tr>
+</table>
+
+<h3>Why not microservices initially?</h3>
+<p>The ERP contains tightly related operations. A retail sale may simultaneously create a sale, reduce stock, record a payment and update a customer receivable. In a monolith, these can be handled as one database transaction using Spring's transaction management.</p>
+<pre>
+Customer buys product
+       ↓
+Create Sale
+       ↓
+Create Sale Items
+       ↓
+Reduce Stock
+       ↓
+Record Payment
+       ↓
+Update Customer Ledger (if applicable)
+       ↓
+Generate Invoice
+</pre>
+<p>In microservices, these operations could cross multiple network boundaries. That introduces distributed transaction and failure-handling problems that are unnecessary for the initial system.</p>
+
+<h3>2.2 Local vs Cloud</h3>
+<div class="callout success"><strong>Recommended: Cloud deployment on AWS.</strong> The ERP should be centrally hosted so authorized users can access the same data from the shop, owner's device or other permitted locations.</div>
+<table>
+<tr><th>Option</th><th>Advantages</th><th>Disadvantages</th><th>Decision</th></tr>
+<tr><td><strong>Local</strong></td><td>Works without internet; low latency; no recurring cloud hosting cost; data can remain on-site.</td><td>Single-machine failure risk; backups become a local responsibility; remote access is harder; updates must be managed on-site.</td><td>Possible for offline-first environments</td></tr>
+<tr><td><strong>Cloud</strong></td><td>Centralized data; remote access; backups; easier maintenance; easier multi-user/multi-branch expansion; centralized monitoring.</td><td>Internet dependency; hosting cost; requires security and backup strategy.</td><td><strong>Recommended</strong></td></tr>
+</table>
+
+<h3>2.3 The final choice</h3>
+<pre>
+React.js
+   ↓
+REST API
+   ↓
+Spring Boot Modular Monolith
+   ↓
+PostgreSQL
+   ↓
+AWS Cloud
+</pre>
+<div class="callout warning"><strong>POS availability consideration:</strong> Internet failure can interrupt a cloud POS. Version 1 can require a reliable connection. If uninterrupted billing is later a hard business requirement, add an offline-capable POS/local cache and synchronization layer rather than prematurely complicating the entire ERP.</div>
+
+<h3>2.4 Why Modular Monolith + Cloud is the sweet spot</h3>
+<ul>
+<li>Fastest practical development path.</li>
+<li>Simple and reliable financial/inventory transactions.</li>
+<li>Easy deployment compared with many independent services.</li>
+<li>Centralized database and backups.</li>
+<li>Easy access for multiple authorized users.</li>
+<li>Can be made microservice-ready through clean module boundaries.</li>
+<li>Supports future multi-store growth without forcing microservice complexity today.</li>
+</ul>
+</section>
+
+<section id="modules">
+<h2>3. ERP Module Map</h2>
+<div class="grid">
+<div class="card"><h3>Dashboard</h3><p>Sales, stock, expenses, outstanding balances, top products and operational indicators.</p></div>
+<div class="card"><h3>Products</h3><p>Product master, variants, SKU, pricing, tax and stock thresholds.</p></div>
+<div class="card"><h3>Barcode</h3><p>Register existing barcodes, generate internal barcodes, validate uniqueness and optionally print labels.</p></div>
+<div class="card"><h3>POS / Billing</h3><p>Dynamic cart, product resolution, discounts, tax, payments, invoice and stock impact.</p></div>
+<div class="card"><h3>Inventory</h3><p>Stock in, stock out, adjustments, movement history and low-stock monitoring.</p></div>
+<div class="card"><h3>Purchases</h3><p>Supplier purchases, purchase invoices, inward stock and payable tracking.</p></div>
+<div class="card"><h3>Suppliers</h3><p>Supplier master, purchase history, payment history and outstanding payable.</p></div>
+<div class="card"><h3>Dealers</h3><p>Dealer relationships, commercial pricing, credit terms and transaction history.</p></div>
+<div class="card"><h3>Customers</h3><p>Profiles, purchase history, returns, credit and payment history.</p></div>
+<div class="card"><h3>Returns / Exchanges</h3><p>Linked return processing, refunds, exchange differences and stock correction.</p></div>
+<div class="card"><h3>Staff</h3><p>Employee profiles, roles, attendance/salary-ready structure and access control.</p></div>
+<div class="card"><h3>Accounting</h3><p>Income, expenses, payments, receivables, payables and profit-related information.</p></div>
+<div class="card"><h3>Reports</h3><p>Sales, stock, purchasing, financial, customer, supplier and staff reports.</p></div>
+<div class="card"><h3>Settings</h3><p>Tax, invoice numbering, return rules, payment methods, store configuration and permissions.</p></div>
+</div>
+</section>
+
+<section id="products">
+<h2>4. Product Management</h2>
+<p>The product system must reflect how readymade retail actually sells goods. <strong>Colour is intentionally excluded</strong> because the store does not require a colour field.</p>
+
+<h3>4.1 Product and Variant separation</h3>
+<p>Use a parent product and variants when size or another sellable attribute changes stock independently.</p>
+<pre>
+Product: Formal Shirt
+│
+├── M   → SKU: SH001-M  → Stock: 12
+├── L   → SKU: SH001-L  → Stock: 8
+├── XL  → SKU: SH001-XL → Stock: 5
+└── XXL → SKU: SH001-XXL → Stock: 2
+</pre>
+
+<h3>4.2 Product fields</h3>
+<table>
+<tr><th>Field</th><th>Purpose</th></tr>
+<tr><td>Database ID</td><td>Permanent internal identifier. Never use it as the physical barcode.</td></tr>
+<tr><td>SKU / Product Code</td><td>Business-friendly identifier used for search and internal operations.</td></tr>
+<tr><td>Product Name</td><td>Human-readable product name.</td></tr>
+<tr><td>Category</td><td>Main classification such as Shirts, Pants, T-Shirts, etc.</td></tr>
+<tr><td>Sub-category</td><td>More specific classification when required.</td></tr>
+<tr><td>Brand</td><td>Brand or manufacturer.</td></tr>
+<tr><td>Size / Variant</td><td>Sellable variant such as M, L, XL, 32, 34, etc., where applicable.</td></tr>
+<tr><td>Purchase Price</td><td>Cost used for inventory/profit calculations.</td></tr>
+<tr><td>Selling Price</td><td>Default retail price.</td></tr>
+<tr><td>GST / Tax</td><td>Tax configuration applicable to the product.</td></tr>
+<tr><td>Minimum Stock Level</td><td>Threshold used for low-stock alerts.</td></tr>
+<tr><td>Status</td><td>Active/inactive or equivalent lifecycle status.</td></tr>
+</table>
+
+<h3>4.3 Product identity rules</h3>
+<ul>
+<li><strong>Database ID:</strong> technical identity.</li>
+<li><strong>SKU:</strong> business identity/search identifier.</li>
+<li><strong>Barcode:</strong> physical machine-readable identifier.</li>
+<li>Never make barcode generation the foundation of billing.</li>
+<li>A product can be found by barcode, SKU, name, category or manual selection.</li>
+</ul>
+
+<h3>4.4 Product lifecycle</h3>
+<div class="flow"><span>Create Product</span><b class="arrow">→</b><span>Create Variant</span><b class="arrow">→</b><span>Set Price/Tax</span><b class="arrow">→</b><span>Register/Generate Barcode</span><b class="arrow">→</b><span>Save</span><b class="arrow">→</b><span>Optional Label Print</span></div>
+</section>
+
+<section id="barcode">
+<h2>5. Barcode Generation, Registration & Reading</h2>
+<p>Barcode is an <strong>input mechanism</strong>, not the billing engine.</p>
+
+<h3>5.1 Supported barcode scenarios</h3>
+<ul>
+<li><strong>Existing supplier/manufacturer barcode:</strong> store it against the product variant.</li>
+<li><strong>System-generated barcode:</strong> generate an internal barcode when a product does not have one.</li>
+<li><strong>Manual entry:</strong> cashier can type a barcode.</li>
+<li><strong>Scanner entry:</strong> USB/Bluetooth scanners can behave like keyboard input.</li>
+<li><strong>SKU search:</strong> billing continues even without barcode.</li>
+<li><strong>Name/category search:</strong> useful when a physical barcode is unavailable or damaged.</li>
+<li><strong>Camera scanning:</strong> can be a future feature.</li>
+</ul>
+
+<h3>5.2 Barcode uniqueness</h3>
+<p>Every active barcode should map to one unambiguous sellable variant. The backend must validate uniqueness rather than relying on the frontend.</p>
+
+<h3>5.3 POS barcode behavior</h3>
+<pre>
+Scanner / Manual Barcode / SKU / Search / Category
+                    ↓
+             Product Resolver
+                    ↓
+                  Cart
+                    ↓
+          Pricing + Discount + Tax
+                    ↓
+                 Payment
+                    ↓
+                Invoice
+                    ↓
+         Stock + Accounting Impact
+</pre>
+
+<h3>5.4 Label printing</h3>
+<p>Optional label printing can show product name, SKU, price and barcode. The ERP should not assume that every store needs to print labels.</p>
+</section>
+
+<section id="pos">
+<h2>6. Dynamic Billing / POS Engine</h2>
+<p>The billing system must be versatile and configurable rather than hard-coded around barcode scanning.</p>
+
+<h3>6.1 Universal cart</h3>
+<p>Regardless of how a product is selected, the POS should create the same cart line structure. This makes barcode scanning, manual search and future integrations share one billing engine.</p>
+
+<h3>6.2 Transaction types</h3>
+<ul>
+<li>Normal retail sale</li>
+<li>Credit sale</li>
+<li>Dealer / bulk sale</li>
+<li>Sales return</li>
+<li>Exchange</li>
+<li>Future configurable transaction types</li>
+</ul>
+
+<h3>6.3 Payment methods</h3>
+<ul>
+<li>Cash</li><li>UPI</li><li>Card</li><li>Bank transfer</li><li>Credit</li><li>Split payment</li>
+</ul>
+<p>Example: a ₹2,500 bill can be paid as ₹1,000 cash + ₹1,000 UPI + ₹500 card.</p>
+
+<h3>6.4 Discounts</h3>
+<ul>
+<li>Fixed amount discount.</li>
+<li>Percentage discount.</li>
+<li>Item-level discount.</li>
+<li>Bill-level discount.</li>
+<li>Customer-specific pricing/discount.</li>
+<li>Dealer-specific pricing/discount.</li>
+</ul>
+
+<h3>6.5 Billing controls</h3>
+<ul>
+<li>Prevent selling more than available stock unless an authorized configuration permits it.</li>
+<li>Require a customer for credit transactions.</li>
+<li>Restrict price overrides to authorized users.</li>
+<li>Restrict high-value discounts to authorized users.</li>
+<li>Maintain invoice numbering.</li>
+<li>Record the cashier/user responsible for each transaction.</li>
+<li>Restrict bill cancellation and maintain audit records.</li>
+</ul>
+
+<h3>6.6 Sale transaction principle</h3>
+<div class="callout"><strong>A sale is more than an invoice.</strong> It is a business event that should affect sale records, sale items, stock movements, payment records and, where applicable, customer/dealer ledgers.</div>
+</section>
+
+<section id="purchases">
+<h2>7. Supplier, Dealer & Purchase Management</h2>
+
+<h3>7.1 Supplier master</h3>
+<ul>
+<li>Name / business name</li><li>Contact information</li><li>Address</li><li>GST/tax information where applicable</li>
+<li>Payment terms</li><li>Outstanding payable</li><li>Purchase history</li><li>Payment history</li>
+</ul>
+
+<h3>7.2 Purchase entry</h3>
+<p>A purchase should record supplier, products/variants, quantities, purchase prices, taxes, discounts, supplier invoice reference and payment status.</p>
+
+<div class="flow"><span>Supplier</span><b class="arrow">→</b><span>Purchase Invoice</span><b class="arrow">→</b><span>Purchase Lines</span><b class="arrow">→</b><span>Confirm</span><b class="arrow">→</b><span>Stock Inward</span><b class="arrow">→</b><span>Supplier Payable</span><b class="arrow">→</b><span>Supplier Payment</span></div>
+
+<h3>7.3 Stock impact</h3>
+<p>Stock should increase when the purchase/stock-in transaction is confirmed. Draft or cancelled purchases should not silently increase available stock.</p>
+
+<h3>7.4 Dealer management</h3>
+<p>Dealers can be modeled separately when their commercial relationship differs from suppliers or retail customers. The system can support dealer-specific pricing, discounts, credit terms and transaction history.</p>
+</section>
+
+<section id="customers">
+<h2>8. Customer Management</h2>
+<table>
+<tr><th>Data</th><th>Purpose</th></tr>
+<tr><td>Customer ID</td><td>Internal identity.</td></tr>
+<tr><td>Name</td><td>Customer identification.</td></tr>
+<tr><td>Phone</td><td>Search and contact.</td></tr>
+<tr><td>Address</td><td>Optional customer information.</td></tr>
+<tr><td>Purchase history</td><td>Past sales and products purchased.</td></tr>
+<tr><td>Return/exchange history</td><td>Customer transaction history.</td></tr>
+<tr><td>Credit / outstanding</td><td>Receivable amount derived from ledger transactions.</td></tr>
+<tr><td>Payment history</td><td>Payments against outstanding balances.</td></tr>
+<tr><td>Notes/tags</td><td>Optional operational information.</td></tr>
+</table>
+<div class="callout warning"><strong>Important:</strong> customer outstanding should not be maintained by manually editing a balance field. Model credit sales and customer payments as financial ledger movements so the balance can be derived and audited.</div>
+</section>
+
+<section id="staff">
+<h2>9. Staff Management</h2>
+<ul>
+<li>Employee/staff profile.</li>
+<li>Employee ID.</li>
+<li>Contact information.</li>
+<li>Joining date.</li>
+<li>Role.</li>
+<li>Salary information or salary-ready structure.</li>
+<li>Attendance support.</li>
+<li>Active/inactive status.</li>
+<li>User-account association where the staff member logs into the ERP.</li>
+</ul>
+<p>Version 1 can keep attendance and salary management lightweight while keeping the data model extensible for future payroll, advances and deductions.</p>
+</section>
+
+<section id="accounts">
+<h2>10. Accounting — Income & Expenses</h2>
+
+<h3>10.1 Income</h3>
+<ul>
+<li>Retail sales.</li>
+<li>Dealer/bulk sales.</li>
+<li>Customer outstanding payments.</li>
+<li>Other income categories.</li>
+</ul>
+
+<h3>10.2 Expenses</h3>
+<ul>
+<li>Rent.</li><li>Electricity.</li><li>Staff-related expenses.</li><li>Transport.</li><li>Maintenance.</li><li>Miscellaneous.</li><li>Custom expense categories.</li>
+</ul>
+
+<h3>10.3 Supplier payments</h3>
+<p>Supplier payments should be linked to supplier outstanding and the relevant purchase/ledger records where appropriate.</p>
+
+<h3>10.4 Payment reconciliation</h3>
+<p>Cash, UPI, card and bank transfer should be separately identifiable so management can compare system totals with actual payment-channel totals.</p>
+
+<h3>10.5 Profit calculation</h3>
+<div class="callout danger"><strong>Do not calculate profit as simply “sales − expenses.”</strong> Product cost and stock movement must be structured so gross profit can be calculated correctly. Operating expenses can then be considered separately.</div>
+</section>
+
+<section id="returns">
+<h2>11. Returns & Exchanges</h2>
+
+<h3>11.1 Sales return</h3>
+<div class="flow"><span>Original Invoice</span><b class="arrow">→</b><span>Select Items</span><b class="arrow">→</b><span>Validate Rules</span><b class="arrow">→</b><span>Return Qty</span><b class="arrow">→</b><span>Stock Increase</span><b class="arrow">→</b><span>Refund / Credit</span><b class="arrow">→</b><span>Accounting Adjustment</span></div>
+
+<h3>11.2 Exchange</h3>
+<p>Exchange is a linked combination of returning the old product and selling/issuing the replacement product.</p>
+<ul>
+<li>New product price higher → collect difference.</li>
+<li>New product price lower → refund difference or issue store credit according to policy.</li>
+<li>Equal value → no additional payment.</li>
+<li>Stock must increase for the returned item and decrease for the replacement.</li>
+</ul>
+
+<h3>11.3 Return policy controls</h3>
+<ul>
+<li>Return window.</li>
+<li>Whether original invoice is mandatory.</li>
+<li>Item condition requirements.</li>
+<li>Allowed refund methods.</li>
+<li>Whether certain categories are non-returnable.</li>
+<li>Who can authorize exceptions.</li>
+</ul>
+</section>
+
+<section id="reports">
+<h2>12. Dashboard & Reports</h2>
+
+<h3>12.1 Dashboard</h3>
+<div class="grid">
+<div class="card"><div class="kpi">Sales</div><p>Today's and selected-period sales.</p></div>
+<div class="card"><div class="kpi">Stock</div><p>Current stock and low-stock indicators.</p></div>
+<div class="card"><div class="kpi">Expenses</div><p>Today's/monthly expenses.</p></div>
+<div class="card"><div class="kpi">Outstanding</div><p>Customer receivables and supplier payables.</p></div>
+<div class="card"><div class="kpi">Top Products</div><p>Best-selling products and variants.</p></div>
+<div class="card"><div class="kpi">Profit</div><p>Gross-profit-oriented performance view.</p></div>
+</div>
+
+<h3>12.2 Reports</h3>
+<ul>
+<li>Daily / weekly / monthly sales.</li>
+<li>Product-wise sales.</li>
+<li>Category-wise sales.</li>
+<li>Staff-wise sales.</li>
+<li>Payment-method sales.</li>
+<li>Purchase reports.</li>
+<li>Supplier outstanding.</li>
+<li>Customer outstanding.</li>
+<li>Stock summary.</li>
+<li>Low-stock report.</li>
+<li>Stock movement report.</li>
+<li>Returns and exchanges.</li>
+<li>Income and expense reports.</li>
+<li>Gross profit and product performance.</li>
+</ul>
+</section>
+
+<section id="security">
+<h2>13. Roles, Permissions & Security</h2>
+<table>
+<tr><th>Role</th><th>Typical access</th></tr>
+<tr><td><strong>Admin / Owner</strong></td><td>Full system access, configuration, users, accounting, reports and sensitive operations.</td></tr>
+<tr><td><strong>Manager</strong></td><td>Sales, inventory, purchases, customers, staff and reports; restricted sensitive configuration.</td></tr>
+<tr><td><strong>Cashier</strong></td><td>POS, barcode/search, payments and permitted returns; no unrestricted accounting/master-data access.</td></tr>
+<tr><td><strong>Inventory Staff</strong></td><td>Stock inward, adjustments and product lookup; restricted financial controls.</td></tr>
+</table>
+<p>Permissions should be granular enough to control sensitive actions such as changing prices, applying high discounts, cancelling invoices, editing expenses and performing stock adjustments.</p>
+
+<h3>Security foundation</h3>
+<ul>
+<li>Spring Security.</li>
+<li>JWT or secure session strategy based on deployment requirements.</li>
+<li>Backend authorization; frontend hiding buttons is not sufficient.</li>
+<li>Password hashing.</li>
+<li>Input validation.</li>
+<li>Audit logs for sensitive actions.</li>
+<li>Secure API access over HTTPS in cloud deployment.</li>
+<li>Database credentials stored securely, not hard-coded.</li>
+</ul>
+</section>
+
+<section id="architecture">
+<h2>14. Technical Architecture</h2>
+
+<h3>14.1 Technology stack</h3>
+<table>
+<tr><th>Layer</th><th>Technology</th><th>Purpose</th></tr>
+<tr><td>Frontend</td><td>React.js</td><td>POS, dashboards, forms, reports and administration UI.</td></tr>
+<tr><td>Backend</td><td>Java + Spring Boot</td><td>Business logic, APIs, security and transaction management.</td></tr>
+<tr><td>Persistence</td><td>Spring Data JPA / Hibernate</td><td>ORM and database access.</td></tr>
+<tr><td>Database</td><td>PostgreSQL</td><td>Transactional relational data.</td></tr>
+<tr><td>Security</td><td>Spring Security</td><td>Authentication and authorization.</td></tr>
+<tr><td>API docs</td><td>OpenAPI / Swagger</td><td>API documentation and testing.</td></tr>
+<tr><td>Deployment</td><td>AWS</td><td>Cloud hosting, database and supporting infrastructure.</td></tr>
+</table>
+
+<h3>14.2 Modular monolith structure</h3>
+<pre>
+backend/
+│
+├── auth/
+│   ├── controller/
+│   ├── service/
+│   ├── repository/
+│   └── entity/
+│
+├── product/
+├── barcode/
+├── inventory/
+├── sales/
+├── purchase/
+├── supplier/
+├── dealer/
+├── customer/
+├── returns/
+├── staff/
+├── accounting/
+├── reports/
+└── common/
+    ├── exception/
+    ├── validation/
+    ├── security/
+    ├── audit/
+    └── configuration/
+</pre>
+
+<h3>14.3 Request flow</h3>
+<pre>
+React UI
+   ↓
+REST Controller
+   ↓
+Service / Business Logic
+   ↓
+Repository
+   ↓
+PostgreSQL
+
+Cross-cutting:
+Security + Validation + Exception Handling + Logging + Auditing
+</pre>
+
+<h3>14.4 Cloud deployment concept</h3>
+<pre>
+                    Internet
+                       │
+                       ↓
+                AWS Infrastructure
+                       │
+              ┌────────┴────────┐
+              ↓                 ↓
+        React Frontend     Spring Boot API
+                                │
+                                ↓
+                          PostgreSQL DB
+</pre>
+<p>The exact AWS services can be finalized during deployment based on cost, expected traffic, backup requirements and operational preference.</p>
+</section>
+
+<section id="database">
+<h2>15. Database Blueprint</h2>
+<p>The following is the conceptual database model. Exact column types and normalization can be finalized during implementation.</p>
+<table>
+<tr><th>Entity</th><th>Purpose</th></tr>
+<tr><td>users</td><td>Login identities.</td></tr>
+<tr><td>roles</td><td>Role definitions.</td></tr>
+<tr><td>permissions</td><td>Granular capabilities.</td></tr>
+<tr><td>staff</td><td>Employee information.</td></tr>
+<tr><td>categories</td><td>Product categories.</td></tr>
+<tr><td>brands</td><td>Brand master.</td></tr>
+<tr><td>products</td><td>Parent product records.</td></tr>
+<tr><td>product_variants</td><td>Sellable size/variant records.</td></tr>
+<tr><td>product_identifiers</td><td>Barcodes and other identifiers.</td></tr>
+<tr><td>stock</td><td>Current stock state.</td></tr>
+<tr><td>stock_movements</td><td>Auditable stock-in/stock-out/adjustment history.</td></tr>
+<tr><td>suppliers</td><td>Supplier master.</td></tr>
+<tr><td>dealers</td><td>Dealer master.</td></tr>
+<tr><td>customers</td><td>Customer master.</td></tr>
+<tr><td>purchase_headers</td><td>Purchase transaction header.</td></tr>
+<tr><td>purchase_items</td><td>Products in a purchase.</td></tr>
+<tr><td>sales_headers</td><td>Sale/invoice header.</td></tr>
+<tr><td>sales_items</td><td>Products sold.</td></tr>
+<tr><td>payments</td><td>Payment records, including split payments.</td></tr>
+<tr><td>returns</td><td>Return/exchange headers.</td></tr>
+<tr><td>return_items</td><td>Returned items.</td></tr>
+<tr><td>expenses</td><td>Expense transactions.</td></tr>
+<tr><td>income_entries</td><td>Other income/financial entries where needed.</td></tr>
+<tr><td>customer_ledger</td><td>Receivable/credit movements.</td></tr>
+<tr><td>supplier_ledger</td><td>Payable movements.</td></tr>
+<tr><td>audit_logs</td><td>Important user/system actions.</td></tr>
+</table>
+
+<h3>Key relationships</h3>
+<ul>
+<li>Product 1 → many Product Variants.</li>
+<li>Variant 1 → many Product Identifiers.</li>
+<li>Variant 1 → many Stock Movements.</li>
+<li>Sale 1 → many Sale Items.</li>
+<li>Sale 1 → many Payments.</li>
+<li>Purchase 1 → many Purchase Items.</li>
+<li>Supplier 1 → many Purchases.</li>
+<li>Customer 1 → many Sales and Ledger Movements.</li>
+<li>Return 1 → many Return Items.</li>
+</ul>
+
+<h3>Stock design principle</h3>
+<p>Current stock can be maintained for fast reads, but every stock change should create a movement record. This gives the system traceability for purchases, sales, returns and manual adjustments.</p>
+</section>
+
+<section id="api">
+<h2>16. API Blueprint</h2>
+<p>These endpoints are an initial blueprint; names and request/response DTOs should be finalized during implementation.</p>
+<table>
+<tr><th>Module</th><th>Endpoints</th></tr>
+<tr><td>Authentication</td><td><code>POST /api/auth/login</code><br><code>POST /api/auth/logout</code><br><code>GET /api/auth/me</code></td></tr>
+<tr><td>Products</td><td><code>GET /api/products</code><br><code>POST /api/products</code><br><code>GET /api/products/{id}</code><br><code>PUT /api/products/{id}</code><br><code>DELETE /api/products/{id}</code><br><code>GET /api/products/search?q=</code><br><code>GET /api/products/barcode/{barcode}</code><br><code>GET /api/products/sku/{sku}</code></td></tr>
+<tr><td>Billing</td><td><code>POST /api/sales</code><br><code>GET /api/sales/{id}</code><br><code>GET /api/sales</code><br><code>POST /api/sales/{id}/cancel</code><br><code>POST /api/sales/{id}/return</code></td></tr>
+<tr><td>Inventory</td><td><code>GET /api/inventory</code><br><code>POST /api/inventory/stock-in</code><br><code>POST /api/inventory/adjustment</code><br><code>GET /api/inventory/movements</code></td></tr>
+<tr><td>Purchases</td><td><code>POST /api/purchases</code><br><code>GET /api/purchases</code><br><code>GET /api/purchases/{id}</code><br><code>POST /api/purchases/{id}/payment</code></td></tr>
+<tr><td>Customers</td><td>CRUD under <code>/api/customers</code> plus ledger/history endpoints.</td></tr>
+<tr><td>Suppliers</td><td>CRUD under <code>/api/suppliers</code> plus purchase/payment/ledger endpoints.</td></tr>
+<tr><td>Staff</td><td>CRUD under <code>/api/staff</code> plus role/access operations.</td></tr>
+</table>
+</section>
+
+<section id="workflows">
+<h2>17. Major End-to-End Workflows</h2>
+
+<h3>17.1 New product</h3>
+<pre>
+Create Product
+   ↓
+Create Variant
+   ↓
+Set Purchase/Selling Price
+   ↓
+Register existing barcode OR generate internal barcode
+   ↓
+Set tax + minimum stock
+   ↓
+Save
+   ↓
+Optional label printing
+</pre>
+
+<h3>17.2 Purchase</h3>
+<pre>
+Supplier
+   ↓
+Purchase Entry
+   ↓
+Purchase Lines
+   ↓
+Confirm
+   ↓
+Stock Increases
+   ↓
+Supplier Payable Created/Updated
+   ↓
+Payment if made
+   ↓
+Ledger + Accounting Records
+</pre>
+
+<h3>17.3 Normal sale</h3>
+<pre>
+POS
+ ↓
+Scan / Search / SKU / Manual Selection
+ ↓
+Product Resolver
+ ↓
+Cart
+ ↓
+Quantity + Price + Discount + Tax
+ ↓
+Customer if required
+ ↓
+Payment
+ ↓
+Invoice
+ ↓
+Stock Decrease
+ ↓
+Payment / Ledger / Accounting Records
+</pre>
+
+<h3>17.4 Credit sale</h3>
+<pre>
+Cart
+ ↓
+Select Customer
+ ↓
+Credit Amount
+ ↓
+Create Sale
+ ↓
+Stock Decrease
+ ↓
+Customer Receivable / Ledger Movement
+</pre>
+
+<h3>17.5 Return</h3>
+<pre>
+Original Sale
+ ↓
+Select Item + Quantity
+ ↓
+Validate Return Policy
+ ↓
+Create Return
+ ↓
+Stock Increase
+ ↓
+Refund / Store Credit / Customer Credit
+ ↓
+Accounting Adjustment
+</pre>
+
+<h3>17.6 Exchange</h3>
+<pre>
+Original Sale
+ ↓
+Return Old Item
+ ↓
+Select New Item
+ ↓
+Calculate Difference
+ ├── Higher → Collect Difference
+ ├── Lower  → Refund / Store Credit
+ └── Equal  → No Difference
+ ↓
+Update Stock Both Ways
+ ↓
+Create Linked Transaction Records
+</pre>
+</section>
+
+<section id="phases">
+<h2>18. Recommended Development Phases</h2>
+<table>
+<tr><th>Phase</th><th>Scope</th><th>Outcome</th></tr>
+<tr><td>1</td><td>Architecture + Authentication</td><td>Project foundation, login, roles and security.</td></tr>
+<tr><td>2</td><td>Product Master</td><td>Products, variants, categories, brands, prices and tax.</td></tr>
+<tr><td>3</td><td>Barcode</td><td>Barcode registration/generation, lookup and scanner-ready POS input.</td></tr>
+<tr><td>4</td><td>Inventory</td><td>Stock, stock-in, adjustments and movement history.</td></tr>
+<tr><td>5</td><td>POS / Billing</td><td>Dynamic cart, sale transaction and invoice.</td></tr>
+<tr><td>6</td><td>Payments</td><td>Cash, UPI, card, bank, credit and split payments.</td></tr>
+<tr><td>7</td><td>Purchases + Suppliers</td><td>Purchase workflow, inward stock and supplier payable.</td></tr>
+<tr><td>8</td><td>Customers + Credit</td><td>Customer profiles, history and receivables.</td></tr>
+<tr><td>9</td><td>Returns + Exchanges</td><td>Controlled return/refund/exchange workflow.</td></tr>
+<tr><td>10</td><td>Staff</td><td>Employee records and role-linked access.</td></tr>
+<tr><td>11</td><td>Accounting</td><td>Income, expenses, payments and ledger views.</td></tr>
+<tr><td>12</td><td>Reports + Dashboard</td><td>Management visibility and analytics.</td></tr>
+<tr><td>13</td><td>Testing + Deployment</td><td>Security, transaction, performance, backup and AWS deployment checks.</td></tr>
+</table>
+
+<h3>Recommended MVP</h3>
+<p>For the first usable release, prioritize:</p>
+<div class="flow"><span>Products</span><b class="arrow">→</b><span>Barcode</span><b class="arrow">→</b><span>Inventory</span><b class="arrow">→</b><span>POS</span><b class="arrow">→</b><span>Payments</span><b class="arrow">→</b><span>Purchases</span><b class="arrow">→</b><span>Suppliers</span><b class="arrow">→</b><span>Customers</span></div>
+<p>Then add returns/exchanges, accounting, staff and advanced reporting.</p>
+</section>
+
+<section id="future">
+<h2>19. Future Evolution</h2>
+<p>The system should be designed so growth does not require a rewrite.</p>
+<h3>19.1 Possible future features</h3>
+<ul>
+<li>Multi-branch support.</li>
+<li>Multiple billing counters.</li>
+<li>Loyalty program.</li>
+<li>Promotions and advanced pricing rules.</li>
+<li>Purchase orders.</li>
+<li>Stock transfers between branches/warehouses.</li>
+<li>Mobile application.</li>
+<li>Advanced analytics.</li>
+<li>Supplier integrations.</li>
+<li>Offline-capable POS with synchronization.</li>
+<li>Advanced audit and operational monitoring.</li>
+</ul>
+
+<h3>19.2 Possible migration to microservices</h3>
+<p>If the business grows into a large SaaS platform with many stores, users and integrations, modules can be extracted gradually.</p>
+<pre>
+CURRENT
+One Spring Boot application
+ ├── Sales
+ ├── Inventory
+ ├── Accounting
+ ├── Customers
+ └── Purchasing
+
+FUTURE, IF JUSTIFIED
+                 API Gateway
+                      │
+        ┌─────────────┼─────────────┐
+        ↓             ↓             ↓
+   Sales Service  Inventory     Customer
+                  Service        Service
+        ↓             ↓             ↓
+   Payment       Purchasing      Loyalty
+   Service         Service       Service
+        └─────────────┬─────────────┘
+                      ↓
+                Event / Queue
+                      ↓
+                  Analytics
+</pre>
+<div class="callout"><strong>Migration principle:</strong> do not split services merely because the system has many modules. Split when independent scaling, deployment, team ownership, reliability isolation or business boundaries justify the operational cost.</div>
+
+<h3>19.3 Architecture principles to preserve</h3>
+<ul>
+<li>Barcode is not the primary database identity.</li>
+<li>Billing is independent of barcode generation.</li>
+<li>Business modules have clear boundaries.</li>
+<li>Stock changes are represented as movements.</li>
+<li>Customer and supplier balances are ledger-driven.</li>
+<li>Financial and inventory operations are transactional.</li>
+<li>Backend permissions enforce security.</li>
+<li>Important actions are auditable.</li>
+<li>Configuration is preferred over hard-coded business rules.</li>
+</ul>
+</section>
+
+<section id="definition">
+<h2>20. Final Project Definition</h2>
+<div class="callout success">
+<strong>Final recommended product:</strong><br><br>
+A cloud-hosted, modular-monolith Readymade Retail ERP built with React.js, Java/Spring Boot and PostgreSQL, deployed on AWS. It provides a dynamic POS independent of barcode generation, barcode-based product lookup, product/variant management without a colour field, inventory, purchasing, supplier/dealer management, customer credit and history, staff management, accounting, returns/exchanges, dashboards, reports and granular role-based access.
+</div>
+
+<h3>Final architecture at a glance</h3>
+<pre>
+                         USERS
+                           │
+                           ↓
+                    React.js Frontend
+                           │
+                        HTTPS
+                           │
+                           ↓
+              ┌────────────────────────┐
+              │ Spring Boot             │
+              │ MODULAR MONOLITH        │
+              ├────────────────────────┤
+              │ Authentication         │
+              │ Products               │
+              │ Barcode                │
+              │ Inventory              │
+              │ POS / Sales            │
+              │ Purchases              │
+              │ Suppliers              │
+              │ Dealers                │
+              │ Customers              │
+              │ Returns / Exchanges    │
+              │ Staff                  │
+              │ Accounting             │
+              │ Reports                │
+              └───────────┬────────────┘
+                          │
+                    JPA / Hibernate
+                          │
+                          ↓
+                    PostgreSQL
+                          │
+                          ↓
+                    AWS Backups
+</pre>
+
+<h3>Final recommendation in one sentence</h3>
+<p><strong>Build it as a Modular Monolith, deploy it in the Cloud, keep the POS transaction engine independent of barcode technology, and design clean module boundaries so microservices can be introduced later only if the business genuinely requires them.</strong></p>
+
+<h3>Implementation quality requirements</h3>
+<ul>
+<li>Use DTOs rather than exposing database entities directly through APIs.</li>
+<li>Use service-layer business logic and transactional boundaries.</li>
+<li>Validate all critical inputs on the backend.</li>
+<li>Use database constraints for uniqueness and referential integrity.</li>
+<li>Use audit logs for sensitive changes.</li>
+<li>Provide automated tests for stock, billing, payment, return and accounting rules.</li>
+<li>Design backups and recovery before production launch.</li>
+<li>Use HTTPS and secure secret management in AWS.</li>
+<li>Monitor application errors and database health.</li>
+<li>Keep business rules configurable where practical.</li>
+</ul>
+
+<div class="callout warning">
+<strong>Important scope note:</strong> This document is a complete planning and architecture baseline, not a claim that every accounting/tax rule has already been finalized. Before production use, local GST/tax, invoicing, statutory accounting and data-retention requirements should be reviewed and implemented according to the store's actual business and compliance needs.
+</div>
+</section>
+
+<footer>
+Readymade Retail ERP — Complete Project Plan & Architecture Specification<br>
+Prepared as a development baseline for requirements, architecture, database design, APIs, UI planning and implementation.
+</footer>
+</div>
+</body>
+</html>
